@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 97%;           /* #F7F7F7 */
+    --foreground: 210 24% 16%;        /* #212529 */
+
+    --card: 0 0% 100%;                /* White cards */
+    --card-foreground: 210 24% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 24% 16%;
+
+    --primary: 350 90% 35%;           /* #A60C25 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 93%;
+    --secondary-foreground: 210 24% 16%;
+
+    --muted: 0 0% 91%;
+    --muted-foreground: 210 10% 46%;
+
+    --accent: 350 90% 35%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 354 70% 54%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 56% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 0 0% 87%;
+    --input: 0 0% 91%;
+    --ring: 350 90% 35%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 210 24% 16%;
+    --sidebar-primary: 350 90% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 210 24% 16%;
+    --sidebar-border: 0 0% 87%;
+    --sidebar-ring: 350 90% 35%;
+
+    /* Custom tokens */
+    --card-shadow: 0 1px 3px 0 rgba(0,0,0,0.04), 0 1px 2px -1px rgba(0,0,0,0.03);
+    --card-shadow-hover: 0 20px 40px -12px rgba(166,12,37,0.12), 0 8px 20px -8px rgba(0,0,0,0.06);
+    --modal-shadow: 0 25px 60px -12px rgba(0,0,0,0.2);
+    --primary-glow: 350 85% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply font-bold tracking-tight;
+  }
+  p, .prose {
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+}
+
+@layer components {
+  .card-elevated {
+    @apply bg-card rounded-2xl border border-border/50;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .card-elevated:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
+  }
+  .btn-primary-brighten {
+    background-color: hsl(var(--primary));
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .btn-primary-brighten:hover {
+    background-color: hsl(var(--primary-glow));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px -4px hsl(350 90% 35% / 0.4);
+  }
+  .countdown-bar {
+    @apply h-1.5 rounded-full;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    transition: width 1s linear, box-shadow 0.3s ease;
+  }
+  .countdown-bar-glow:hover .countdown-bar {
+    box-shadow: 0 0 16px hsl(350 90% 35% / 0.4);
+  }
+  .nav-link {
+    @apply text-sm font-medium text-muted-foreground transition-all duration-200;
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    @apply text-primary;
+  }
+  .stat-card {
+    @apply bg-card rounded-2xl border border-border/50 p-6;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .stat-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+  }
+  .glass-input {
+    @apply w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200;
+  }
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-muted-foreground;
+  }
+}
