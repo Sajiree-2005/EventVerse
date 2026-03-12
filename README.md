@@ -15,6 +15,14 @@
 </div>
 
 ---
+# EventVerse
+A modern campus event management and registration platform
+
+🌐 **Live Demo:** [https://your-eventverse-link.com](https://event-verse-amber.vercel.app/)
+
+React TypeScript Vite TailwindCSS Flask MySQL
+
+---
 
 ## Overview
 
@@ -27,7 +35,6 @@ Built with a React/TypeScript frontend and a Flask/MySQL backend, EventVerse is 
 ## Features
 
 ### 🎓 Student Features
-
 - **Browse Events** — Discover upcoming events with search and category filtering
 - **Event Details** — View full event info, schedule, rewards, and countdown timer
 - **Student Portal** — Personalized login using name + institutional email
@@ -35,7 +42,6 @@ Built with a React/TypeScript frontend and a Flask/MySQL backend, EventVerse is 
 - **Dashboard** — View all registered events with status (Upcoming / Ongoing / Completed)
 
 ### 🛠️ Admin Features
-
 - **Secure Admin Login** — Protected admin portal with credential authentication
 - **Create Events** — Full event creation form with image preview
 - **Manage Events** — Edit, view, and delete events with fill rate indicators
@@ -47,15 +53,15 @@ Built with a React/TypeScript frontend and a Flask/MySQL backend, EventVerse is 
 
 ## Tech Stack
 
-| Layer        | Technologies                                          |
-| ------------ | ----------------------------------------------------- |
+| Layer | Technologies |
+|-------|-------------|
 | **Frontend** | React 18, TypeScript, Vite 5, Tailwind CSS, shadcn/ui |
-| **State**    | React Context API, TanStack Query                     |
-| **Charts**   | Chart.js, react-chartjs-2                             |
-| **Routing**  | React Router v6                                       |
-| **Backend**  | Flask (Python), Flask-CORS                            |
-| **Database** | MySQL 8                                               |
-| **Icons**    | Lucide React                                          |
+| **State** | React Context API, TanStack Query |
+| **Charts** | Chart.js, react-chartjs-2 |
+| **Routing** | React Router v6 |
+| **Backend** | Flask (Python), Flask-CORS |
+| **Database** | MySQL 8 |
+| **Icons** | Lucide React |
 
 ---
 
@@ -217,55 +223,40 @@ SECRET_KEY=your-secret-key-here
 ## API Endpoints
 
 ### Events
-
-| Method   | Endpoint          | Description              |
-| -------- | ----------------- | ------------------------ |
-| `GET`    | `/api/events`     | List all events          |
-| `GET`    | `/api/events/:id` | Get event details        |
-| `POST`   | `/api/events`     | Create new event (admin) |
-| `PUT`    | `/api/events/:id` | Update event (admin)     |
-| `DELETE` | `/api/events/:id` | Delete event (admin)     |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/events` | List all events |
+| `GET` | `/api/events/:id` | Get event details |
+| `POST` | `/api/events` | Create new event (admin) |
+| `PUT` | `/api/events/:id` | Update event (admin) |
+| `DELETE` | `/api/events/:id` | Delete event (admin) |
 
 ### Students
-
-| Method | Endpoint            | Description             |
-| ------ | ------------------- | ----------------------- |
-| `GET`  | `/api/students`     | List all students       |
-| `POST` | `/api/students`     | Register/create student |
-| `GET`  | `/api/students/:id` | Get student details     |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/students` | List all students |
+| `POST` | `/api/students` | Register/create student |
+| `GET` | `/api/students/:id` | Get student details |
 
 ### Registrations
-
-| Method | Endpoint                              | Description             |
-| ------ | ------------------------------------- | ----------------------- |
-| `POST` | `/api/register`                       | Register for an event   |
-| `GET`  | `/api/registrations/:event_id`        | Get event registrations |
-| `GET`  | `/api/registrations/export/:event_id` | Export as CSV           |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/register` | Register for an event |
+| `GET` | `/api/registrations/:event_id` | Get event registrations |
+| `GET` | `/api/registrations/export/:event_id` | Export as CSV |
 
 ### Admin
-
-| Method | Endpoint           | Description          |
-| ------ | ------------------ | -------------------- |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | `POST` | `/api/admin/login` | Admin authentication |
 
 ---
 
 ## Deployment Guide
 
-### Frontend (Vercel / Netlify)
-
-```bash
-npm run build
-# Deploy the `dist/` folder
-```
-
-For Vercel, add a `vercel.json`:
-
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
-}
-```
+Frontend (Vercel / Netlify)
+...
+After deploying, your live site is available at: [https://your-eventverse-link.com](https://your-eventverse-link.com)
 
 ### Backend (Railway / Render)
 
@@ -278,7 +269,6 @@ gunicorn app:app --bind 0.0.0.0:$PORT
 ```
 
 Add a `Procfile`:
-
 ```
 web: gunicorn app:app
 ```
