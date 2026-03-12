@@ -254,19 +254,9 @@ SECRET_KEY=your-secret-key-here
 
 ## Deployment Guide
 
-### Frontend (Vercel / Netlify)
-
-```bash
-npm run build
-# Deploy the `dist/` folder
-```
-
-For Vercel, add a `vercel.json`:
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
-}
-```
+Frontend (Vercel / Netlify)
+...
+After deploying, your live site is available at: [https://your-eventverse-link.com](https://your-eventverse-link.com)
 
 ### Backend (Railway / Render)
 
