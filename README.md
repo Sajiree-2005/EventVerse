@@ -18,7 +18,7 @@
 # EventVerse
 A modern campus event management and registration platform
 
-🌐 **Live Demo:** [https://your-eventverse-link.com](https://event-verse-amber.vercel.app/)
+🌐 **Live Demo:** [EventVerse](https://event-verse-amber.vercel.app/)
 
 React TypeScript Vite TailwindCSS Flask MySQL
 
