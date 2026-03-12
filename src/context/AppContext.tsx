@@ -1,22 +1,13 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { Event, Registration, SAMPLE_EVENTS } from "@/data/events";
 
-// API Configuration - Use environment variable or backend URL
-// In production (Vercel): VITE_API_URL should be set to https://eventverse-b4ww.onrender.com/api
-// In development: Falls back to http://localhost:5000/api
+// API Configuration
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL?.trim() ||
-  (typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
-    : "https://eventverse-b4ww.onrender.com/api");
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 // Log the API URL on load
 console.log("API_BASE_URL configured as:", API_BASE_URL);
 console.log("VITE_API_URL env var:", import.meta.env.VITE_API_URL);
-console.log(
-  "Hostname:",
-  typeof window !== "undefined" ? window.location.hostname : "unknown",
-);
 
 export interface Student {
   name: string;
@@ -152,28 +143,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         });
 
         console.log("Response status:", response.status);
-        console.log("Response headers:", {
-          contentType: response.headers.get("content-type"),
-        });
-
-        let data;
-        try {
-          data = await response.json();
-          console.log("Response data:", data);
-        } catch (parseError) {
-          console.error("JSON parse error:", parseError);
-          const text = await response.text();
-          console.error("Response text:", text);
-          return {
-            success: false,
-            message: "Invalid response from server",
-          };
-        }
+        const data = await response.json();
+        console.log("Response data:", data);
 
         if (!response.ok) {
           return {
             success: false,
-            message: data.message || `Server error: ${response.status}`,
+            message: data.message || "Registration failed",
           };
         }
 
@@ -206,7 +182,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
             ? error.message
             : "Network error. Please try again.";
         console.error("Error details:", errorMessage);
-        console.error("Full error object:", error);
         return { success: false, message: `Error: ${errorMessage}` };
       }
     },
