@@ -1,10 +1,16 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { Event, Registration, SAMPLE_EVENTS } from "@/data/events";
 
+export interface Student {
+  name: string;
+  email: string;
+}
+
 interface AppState {
   events: Event[];
   registrations: Registration[];
   isAdminLoggedIn: boolean;
+  currentStudent: Student | null;
   notificationBanner: string | null;
 }
 
@@ -15,6 +21,8 @@ interface AppContextType extends AppState {
   registerForEvent: (eventId: string, studentName: string, studentEmail: string) => { success: boolean; message: string };
   loginAdmin: (email: string, password: string) => boolean;
   logoutAdmin: () => void;
+  loginStudent: (name: string, email: string) => void;
+  logoutStudent: () => void;
   dismissBanner: () => void;
   getEventRegistrations: (eventId: string) => Registration[];
 }
@@ -31,6 +39,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [events, setEvents] = useState<Event[]>(SAMPLE_EVENTS);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [notificationBanner, setNotificationBanner] = useState<string | null>(
     "🔥 New Event Added: Hackathon 2026 — Register before 15 March"
   );
@@ -94,6 +103,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   const logoutAdmin = useCallback(() => setIsAdminLoggedIn(false), []);
+
+  const loginStudent = useCallback((name: string, email: string) => {
+    setCurrentStudent({ name, email });
+  }, []);
+
+  const logoutStudent = useCallback(() => setCurrentStudent(null), []);
+
   const dismissBanner = useCallback(() => setNotificationBanner(null), []);
 
   const getEventRegistrations = useCallback(
@@ -107,6 +123,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         events,
         registrations,
         isAdminLoggedIn,
+        currentStudent,
         notificationBanner,
         addEvent,
         updateEvent,
@@ -114,6 +131,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         registerForEvent,
         loginAdmin,
         logoutAdmin,
+        loginStudent,
+        logoutStudent,
         dismissBanner,
         getEventRegistrations,
       }}

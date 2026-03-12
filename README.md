@@ -1,285 +1,329 @@
-# EventVerse 🎓
+<div align="center">
+  <img src="public/logo.svg" alt="EventVerse Logo" width="200" />
+  
+  # EventVerse
+  
+  **A modern campus event management and registration platform**
+  
+  [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
+  [![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
+  [![TailwindCSS](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+  [![Flask](https://img.shields.io/badge/Flask-3-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+  [![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)](https://mysql.com)
 
-A full-stack campus event management platform.
+</div>
 
-| Layer    | Stack                                                     |
-| -------- | --------------------------------------------------------- |
-| Frontend | React 18 · Vite 5 · TypeScript · Tailwind CSS · shadcn/ui |
-| Backend  | Python 3 · Flask 3 · Flask-CORS · MySQL 8                 |
-| Charts   | Chart.js 4 · react-chartjs-2                              |
-| HTTP     | Fetch API (proxied by Vite — no CORS in dev)              |
+---
+
+## Overview
+
+EventVerse is a full-stack campus event management platform that enables students to discover, register for, and track campus events — while giving administrators a comprehensive dashboard to create, manage, and analyze events in real time.
+
+Built with a React/TypeScript frontend and a Flask/MySQL backend, EventVerse is designed to be fast, modern, and extensible.
 
 ---
 
 ## Features
 
-| Feature                  | How it works                                                                            |
-| ------------------------ | --------------------------------------------------------------------------------------- |
-| **Event listing**        | `GET /api/events` — cards with search + category filter                                 |
-| **Event detail**         | `GET /api/events/:id` — countdown timer, capacity bar, poster                           |
-| **Student registration** | `POST /api/register` — name + email; async modal with spinner                           |
-| **Duplicate prevention** | Checked in Python + enforced by `UNIQUE KEY uq_student_event` in MySQL                  |
-| **Capacity tracking**    | `registered / capacity` bar on every card and detail page                               |
-| **Student dashboard**    | `GET /api/student/registrations?email=` — look up your events                           |
-| **Admin login**          | `POST /api/admin/login` — credentials from `.env`                                       |
-| **Create event**         | `POST /api/events` — form with validation, stores in MySQL                              |
-| **Manage events**        | `DELETE /api/events/:id` — confirmed delete with spinner                                |
-| **Participant list**     | `GET /api/events/:id/participants` — paginated table                                    |
-| **CSV export**           | `GET /api/events/:id/export` — pandas CSV download (filename via `Content-Disposition`) |
-| **Admin analytics**      | `GET /api/admin/analytics` — bar chart, pie chart, stat cards                           |
+### 🎓 Student Features
+- **Browse Events** — Discover upcoming events with search and category filtering
+- **Event Details** — View full event info, schedule, rewards, and countdown timer
+- **Student Portal** — Personalized login using name + institutional email
+- **Register for Events** — One-click registration with real-time seat tracking
+- **Dashboard** — View all registered events with status (Upcoming / Ongoing / Completed)
+
+### 🛠️ Admin Features
+- **Secure Admin Login** — Protected admin portal with credential authentication
+- **Create Events** — Full event creation form with image preview
+- **Manage Events** — Edit, view, and delete events with fill rate indicators
+- **Participants** — View per-event participant lists with avatars
+- **Export CSV** — Download participant lists as `.csv` files
+- **Analytics Dashboard** — Bar charts, doughnut charts, fill rate trends, and key metrics
 
 ---
 
-## Project structure
+## Tech Stack
+
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React 18, TypeScript, Vite 5, Tailwind CSS, shadcn/ui |
+| **State** | React Context API, TanStack Query |
+| **Charts** | Chart.js, react-chartjs-2 |
+| **Routing** | React Router v6 |
+| **Backend** | Flask (Python), Flask-CORS |
+| **Database** | MySQL 8 |
+| **Icons** | Lucide React |
+
+---
+
+## Architecture
 
 ```
-EventVerse-main/
+EventVerse/
+├── frontend/                 # React + Vite application
+│   ├── src/
+│   │   ├── components/       # Reusable UI components
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── EventCard.tsx
+│   │   │   ├── EventFilters.tsx
+│   │   │   ├── RegistrationModal.tsx
+│   │   │   ├── CountdownTimer.tsx
+│   │   │   └── ui/           # shadcn/ui primitives
+│   │   ├── context/
+│   │   │   └── AppContext.tsx # Global state + student/admin auth
+│   │   ├── pages/
+│   │   │   ├── Index.tsx
+│   │   │   ├── Events.tsx
+│   │   │   ├── EventDetail.tsx
+│   │   │   ├── StudentLogin.tsx
+│   │   │   ├── StudentDashboard.tsx
+│   │   │   ├── AdminLogin.tsx
+│   │   │   ├── AdminDashboard.tsx
+│   │   │   ├── CreateEvent.tsx
+│   │   │   ├── ManageEvents.tsx
+│   │   │   ├── Participants.tsx
+│   │   │   └── EventAnalytics.tsx
+│   │   ├── data/
+│   │   │   └── events.ts     # Types + sample data
+│   │   └── index.css         # Global styles + design tokens
+│   └── public/
+│       ├── logo.svg
+│       └── favicon.svg
 │
-├── backend/                        Flask API
-│   ├── app.py                      App factory, CORS, blueprints, error handlers
-│   ├── config.py                   Reads .env via python-dotenv
-│   ├── requirements.txt
-│   ├── .env.example                Copy → .env, fill in DB_PASSWORD
-│   │
-│   ├── controllers/
-│   │   ├── admin_controller.py     GET /admin/analytics · POST /admin/login
-│   │   ├── event_controller.py     CRUD /events
-│   │   └── registration_controller.py  POST /register · GET /participants · GET /student/registrations
-│   │
-│   ├── database/
-│   │   ├── db_connection.py        MySQL connection pool (size 5) + execute_query helper
-│   │   └── schema.sql              Tables + idempotent seed data (INSERT IGNORE)
-│   │
-│   ├── models/
-│   │   ├── event_model.py          SQL queries for events table
-│   │   ├── registration_model.py   SQL queries for registrations table
-│   │   └── student_model.py        get_or_create_student · get_student_registrations
-│   │
-│   ├── routes/
-│   │   ├── admin_routes.py
-│   │   ├── event_routes.py
-│   │   └── registration_routes.py
-│   │
-│   └── utils/
-│       └── export_csv.py           pandas → BytesIO → send_file (CSV)
-│
-├── src/                            React frontend
-│   ├── lib/
-│   │   └── api.ts                  Typed fetch wrappers for every endpoint
-│   │
-│   ├── context/
-│   │   └── AppContext.tsx          Global state; loads events on mount via API
-│   │
-│   ├── pages/
-│   │   ├── Index.tsx               Hero + event grid (loading + error states)
-│   │   ├── Events.tsx              Full event list with search/filter
-│   │   ├── EventDetail.tsx         Single event + RegistrationModal
-│   │   ├── StudentDashboard.tsx    Email search → registered events
-│   │   ├── AdminLogin.tsx          Async login → /api/admin/login
-│   │   ├── AdminDashboard.tsx      Stat cards + bar/pie charts from /api/admin/analytics
-│   │   ├── CreateEvent.tsx         Form → POST /api/events
-│   │   ├── ManageEvents.tsx        List + async delete
-│   │   ├── Participants.tsx        GET /api/events/:id/participants + CSV export
-│   │   └── EventAnalytics.tsx      Per-event analytics from API
-│   │
-│   └── components/
-│       ├── Navbar.tsx
-│       ├── EventCard.tsx           Card with countdown timer + capacity bar
-│       ├── EventFilters.tsx        Search input + category pill buttons
-│       ├── CountdownTimer.tsx      Live countdown (1-second interval)
-│       └── RegistrationModal.tsx   Async submit with loading spinner
-│
-├── vite.config.ts                  port 5173 · proxy /api → localhost:5000
-├── package.json                    includes chart.js ^4.4.0 (peer dep)
-└── .gitignore                      excludes .env, __pycache__, venv
+└── backend/                  # Flask API
+    ├── app.py                # Application entry point
+    ├── config.py             # Configuration
+    ├── controllers/          # Business logic
+    ├── models/               # Database models
+    ├── routes/               # API route definitions
+    ├── database/
+    │   ├── db_connection.py
+    │   └── schema.sql        # Database schema
+    └── utils/
+        └── export_csv.py
 ```
 
 ---
 
-## Prerequisites
-
-| Tool    | Minimum |
-| ------- | ------- |
-| Node.js | 18      |
-| npm     | 9       |
-| Python  | 3.10    |
-| MySQL   | 8.0     |
-
----
-
-## 1 · Database setup
-
-### Start MySQL
-
-```bash
-# macOS (Homebrew)
-brew services start mysql
-
-# Linux (systemd)
-sudo systemctl start mysql
-
-# Windows
-net start MySQL80
-```
-
-### Run the schema (safe to run multiple times)
-
-```bash
-mysql -u root -p < backend/database/schema.sql
-```
-
-This creates `eventverse_db` with three tables and seeds six sample events plus three demo students.
-
-Verify:
+## Database Schema
 
 ```sql
-mysql -u root -p eventverse_db
-SELECT event_name, event_category, max_participants FROM events;
+-- Students table
+CREATE TABLE Students (
+  student_id    INT PRIMARY KEY AUTO_INCREMENT,
+  student_name  VARCHAR(255) NOT NULL,
+  student_email VARCHAR(255) UNIQUE NOT NULL,
+  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Events table
+CREATE TABLE Events (
+  id                   INT PRIMARY KEY AUTO_INCREMENT,
+  name                 VARCHAR(255) NOT NULL,
+  description          TEXT,
+  category             VARCHAR(100),
+  date                 DATETIME NOT NULL,
+  venue                VARCHAR(255),
+  capacity             INT NOT NULL,
+  registrationDeadline DATETIME,
+  poster               TEXT,
+  createdAt            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Registrations table
+CREATE TABLE Registrations (
+  id            INT PRIMARY KEY AUTO_INCREMENT,
+  student_id    INT REFERENCES Students(student_id),
+  event_id      INT REFERENCES Events(id),
+  registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
 ---
 
-## 2 · Backend
+## Installation Guide
 
-### Environment variables
+### Prerequisites
+
+- Node.js 18+ and npm
+- Python 3.10+
+- MySQL 8+
+
+### 1. Clone the Repository
 
 ```bash
-cp backend/.env.example backend/.env
+git clone https://github.com/your-username/eventverse.git
+cd eventverse
 ```
 
-Edit `backend/.env`:
-
-```env
-# ── Database ──────────────────────────────────────────────────
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_mysql_password_here
-DB_NAME=eventverse_db
-
-# ── Flask ─────────────────────────────────────────────────────
-FLASK_ENV=development
-FLASK_DEBUG=True
-SECRET_KEY=change-me-in-production
-
-# ── Admin account ─────────────────────────────────────────────
-ADMIN_EMAIL=admin@eventverse.com
-ADMIN_PASSWORD=admin123
-```
-
-### Install & run
+### 2. Backend Setup
 
 ```bash
 cd backend
 
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+source venv/bin/activate       # macOS/Linux
+# or: venv\Scripts\activate    # Windows
 
+# Install dependencies
 pip install -r requirements.txt
 
+# Create your .env file
+cp .env.example .env
+# Edit .env with your database credentials
+
+# Set up the database
+mysql -u root -p < database/schema.sql
+
+# Start the backend
 python app.py
 ```
 
-**Flask listens on `http://localhost:5000`**
+Backend runs at: `http://localhost:5000`
 
-Quick smoke test:
-
-```bash
-curl http://localhost:5000/api/health
-# {"message":"EventVerse API is running","status":"ok"}
-
-curl http://localhost:5000/api/events | python3 -m json.tool | head -20
-```
-
----
-
-## 3 · Frontend
-
-Open a **second terminal** (keep Flask running):
+### 3. Frontend Setup
 
 ```bash
-# From the project root (EventVerse-main/)
+# From project root
 npm install
+
+# Start development server
 npm run dev
 ```
 
-**App available at `http://localhost:5173`**
-
-Vite proxies every `/api/*` request to `http://localhost:5000`, so no CORS configuration is needed during development.
+Frontend runs at: `http://localhost:8080`
 
 ---
 
-## API reference
+## Environment Variables
 
-| Method   | Path                                | Description                                                                                        |
-| -------- | ----------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `GET`    | `/api/health`                       | Health check                                                                                       |
-| `GET`    | `/api/events`                       | List all events (with registration count)                                                          |
-| `GET`    | `/api/events/:id`                   | Single event detail                                                                                |
-| `POST`   | `/api/events`                       | Create event `{name, description, date, venue, category, capacity, registrationDeadline, poster?}` |
-| `PUT`    | `/api/events/:id`                   | Update event (partial)                                                                             |
-| `DELETE` | `/api/events/:id`                   | Delete event (cascades registrations)                                                              |
-| `POST`   | `/api/register`                     | Register `{eventId, studentName, studentEmail}`                                                    |
-| `GET`    | `/api/events/:id/participants`      | Participant list for event                                                                         |
-| `GET`    | `/api/events/:id/export`            | Download participants CSV                                                                          |
-| `GET`    | `/api/student/registrations?email=` | Events registered by a student                                                                     |
-| `POST`   | `/api/admin/login`                  | Admin login `{email, password}`                                                                    |
-| `GET`    | `/api/admin/analytics`              | Aggregate stats + per-event participation                                                          |
+Create a `.env` file in the `backend/` directory:
 
-### Registration validation order
-
-1. Body present + required fields non-empty
-2. `eventId` is a valid integer
-3. Event exists in DB
-4. Registration deadline not passed
-5. `registered < capacity`
-6. Student not already registered _(application check + DB `UNIQUE KEY` backup)_
-7. `get_or_create_student` → insert `registrations` row
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=eventverse
+SECRET_KEY=your-secret-key-here
+```
 
 ---
 
-## Admin access
+## API Endpoints
 
-Navigate to **`http://localhost:5173/admin/login`**
+### Events
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/events` | List all events |
+| `GET` | `/api/events/:id` | Get event details |
+| `POST` | `/api/events` | Create new event (admin) |
+| `PUT` | `/api/events/:id` | Update event (admin) |
+| `DELETE` | `/api/events/:id` | Delete event (admin) |
+
+### Students
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/students` | List all students |
+| `POST` | `/api/students` | Register/create student |
+| `GET` | `/api/students/:id` | Get student details |
+
+### Registrations
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/register` | Register for an event |
+| `GET` | `/api/registrations/:event_id` | Get event registrations |
+| `GET` | `/api/registrations/export/:event_id` | Export as CSV |
+
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/admin/login` | Admin authentication |
+
+---
+
+## Deployment Guide
+
+### Frontend (Vercel / Netlify)
+
+```bash
+npm run build
+# Deploy the `dist/` folder
+```
+
+For Vercel, add a `vercel.json`:
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+```
+
+### Backend (Railway / Render)
+
+1. Set environment variables in your deployment dashboard
+2. Use `gunicorn` as the production WSGI server:
+
+```bash
+pip install gunicorn
+gunicorn app:app --bind 0.0.0.0:$PORT
+```
+
+Add a `Procfile`:
+```
+web: gunicorn app:app
+```
+
+### Database (PlanetScale / Railway MySQL)
+
+Update `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` in your production environment variables.
+
+---
+
+## Admin Access
+
+For demo/development purposes:
 
 ```
 Email:    admin@eventverse.com
 Password: admin123
 ```
 
-(Override via `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `backend/.env`)
+> ⚠️ Change these credentials before deploying to production.
 
 ---
 
-## Troubleshooting
+## Contribution Guide
 
-| Symptom                                             | Fix                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------------------- |
-| "Failed to fetch events" on homepage                | Flask is not running. Run `python app.py` inside `backend/`               |
-| `ConnectionError: Failed to get DB connection`      | MySQL is stopped, or `DB_PASSWORD` in `.env` is wrong                     |
-| `ModuleNotFoundError: No module named 'flask_cors'` | Run `pip install -r requirements.txt` with venv active                    |
-| Charts blank / `Chart is not defined`               | `npm install` to get `chart.js ^4.4.0` (now explicit in `package.json`)   |
-| CSV download filename wrong                         | Fixed: `expose_headers: ["Content-Disposition"]` now set in CORS config   |
-| Port 5000 in use on macOS                           | Disable AirPlay Receiver in System Settings → General → AirDrop & Handoff |
-| Port 5173 in use                                    | `lsof -ti:5173 \| xargs kill` (macOS/Linux)                               |
+We welcome contributions! Here's how to get started:
+
+1. **Fork** the repository on GitHub
+2. **Clone** your fork: `git clone https://github.com/your-fork/eventverse.git`
+3. **Create a branch**: `git checkout -b feature/your-feature-name`
+4. **Make your changes** and commit: `git commit -m "feat: add your feature"`
+5. **Push** to your branch: `git push origin feature/your-feature-name`
+6. Open a **Pull Request** with a clear description of your changes
+
+### Commit Convention
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` — New feature
+- `fix:` — Bug fix
+- `docs:` — Documentation update
+- `style:` — UI/styling changes
+- `refactor:` — Code refactoring
+- `chore:` — Build/config changes
 
 ---
 
-## Quick start (TL;DR)
+## License
 
-```bash
-# ── Terminal 1: database + backend ───────────────────────────
-mysql -u root -p < backend/database/schema.sql
-cp backend/.env.example backend/.env   # fill in DB_PASSWORD
+MIT © EventVerse. Feel free to use this project for educational and campus purposes.
 
-cd backend
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-python app.py
+---
 
-# ── Terminal 2: frontend (project root) ──────────────────────
-npm install
-npm run dev
-```
-
-Open **http://localhost:5173** · Admin at `/admin/login`
+<div align="center">
+  Built with ❤️ for campus communities
+</div>

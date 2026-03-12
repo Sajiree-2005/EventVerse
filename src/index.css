@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,16 +6,16 @@
 
 @layer base {
   :root {
-    --background: 0 0% 97%;           /* #F7F7F7 */
-    --foreground: 210 24% 16%;        /* #212529 */
+    --background: 0 0% 97%; /* #F7F7F7 */
+    --foreground: 210 24% 16%; /* #212529 */
 
-    --card: 0 0% 100%;                /* White cards */
+    --card: 0 0% 100%; /* White cards */
     --card-foreground: 210 24% 16%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 210 24% 16%;
 
-    --primary: 350 90% 35%;           /* #A60C25 */
+    --primary: 350 90% 35%; /* #A60C25 */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 93%;
@@ -49,9 +49,13 @@
     --sidebar-ring: 350 90% 35%;
 
     /* Custom tokens */
-    --card-shadow: 0 1px 3px 0 rgba(0,0,0,0.04), 0 1px 2px -1px rgba(0,0,0,0.03);
-    --card-shadow-hover: 0 20px 40px -12px rgba(166,12,37,0.12), 0 8px 20px -8px rgba(0,0,0,0.06);
-    --modal-shadow: 0 25px 60px -12px rgba(0,0,0,0.2);
+    --card-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    --card-shadow-hover:
+      0 20px 44px -12px rgba(166, 12, 37, 0.14),
+      0 8px 20px -8px rgba(0, 0, 0, 0.07);
+    --modal-shadow:
+      0 25px 60px -12px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.04);
     --primary-glow: 350 85% 42%;
   }
 }
@@ -59,49 +63,101 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Inter", system-ui, sans-serif;
     @apply font-bold tracking-tight;
   }
-  p, .prose {
-    font-family: 'Source Serif 4', Georgia, serif;
+  p,
+  .prose {
+    font-family: "Source Serif 4", Georgia, serif;
   }
 }
 
 @layer components {
+  /* Cards */
   .card-elevated {
     @apply bg-card rounded-2xl border border-border/50;
     box-shadow: var(--card-shadow);
-    transition: box-shadow 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    transition:
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .card-elevated:hover {
     box-shadow: var(--card-shadow-hover);
     transform: translateY(-4px);
   }
+
+  /* Buttons */
   .btn-primary-brighten {
     background-color: hsl(var(--primary));
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .btn-primary-brighten:hover {
     background-color: hsl(var(--primary-glow));
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px -4px hsl(350 90% 35% / 0.4);
+    box-shadow: 0 6px 20px -4px hsl(350 90% 35% / 0.45);
   }
+  .btn-primary-brighten:active {
+    transform: translateY(0px);
+  }
+
+  /* Countdown */
   .countdown-bar {
     @apply h-1.5 rounded-full;
-    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    transition: width 1s linear, box-shadow 0.3s ease;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--primary)),
+      hsl(var(--primary-glow))
+    );
+    transition:
+      width 1s linear,
+      box-shadow 0.3s ease;
   }
-  .countdown-bar-glow:hover .countdown-bar {
-    box-shadow: 0 0 16px hsl(350 90% 35% / 0.4);
+
+  /* Stat cards */
+  .stat-card {
+    @apply bg-card rounded-2xl border border-border/50 p-6;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  .stat-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Inputs */
+  .glass-input {
+    @apply w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/60;
+    @apply transition-all duration-200;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  .glass-input:focus {
+    box-shadow: 0 0 0 3px hsl(350 90% 35% / 0.1);
+  }
+
+  /* Labels */
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-muted-foreground;
+  }
+
+  /* Nav */
   .nav-link {
     @apply text-sm font-medium text-muted-foreground transition-all duration-200;
   }
@@ -109,19 +165,61 @@
   .nav-link.active {
     @apply text-primary;
   }
-  .stat-card {
-    @apply bg-card rounded-2xl border border-border/50 p-6;
-    box-shadow: var(--card-shadow);
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-  .stat-card:hover {
-    box-shadow: var(--card-shadow-hover);
-    transform: translateY(-2px);
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
   }
-  .glass-input {
-    @apply w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200;
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
   }
-  .section-title {
-    @apply text-xs font-semibold uppercase tracking-widest text-muted-foreground;
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+/* ── Admin sidebar layout ──────────────────────────────── */
+@layer components {
+  .admin-sidebar-link {
+    @apply flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150;
+  }
+  .admin-sidebar-link.active {
+    @apply bg-primary text-primary-foreground shadow-sm;
+  }
+  .admin-sidebar-link:not(.active) {
+    @apply text-muted-foreground hover:text-foreground hover:bg-muted/70;
+  }
+
+  /* Chart card overrides for cleaner look */
+  .chart-card {
+    @apply card-elevated p-6;
+  }
+  .chart-card-title {
+    @apply text-sm font-extrabold text-foreground flex items-center gap-2 mb-5;
+  }
+
+  /* Shimmer loading placeholder */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--background)) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 }
