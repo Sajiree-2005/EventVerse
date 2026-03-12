@@ -15,14 +15,6 @@
 </div>
 
 ---
-# EventVerse
-A modern campus event management and registration platform
-
-🌐 **Live Demo:** [EventVerse](https://event-verse-amber.vercel.app/)
-
-React TypeScript Vite TailwindCSS Flask MySQL
-
----
 
 ## Overview
 
@@ -254,9 +246,19 @@ SECRET_KEY=your-secret-key-here
 
 ## Deployment Guide
 
-Frontend (Vercel / Netlify)
-...
-After deploying, your live site is available at: [https://your-eventverse-link.com](https://your-eventverse-link.com)
+### Frontend (Vercel / Netlify)
+
+```bash
+npm run build
+# Deploy the `dist/` folder
+```
+
+For Vercel, add a `vercel.json`:
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
+```
 
 ### Backend (Railway / Render)
 

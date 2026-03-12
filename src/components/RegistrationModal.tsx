@@ -1,15 +1,7 @@
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { Event } from "@/data/events";
-import {
-  X,
-  CheckCircle2,
-  AlertCircle,
-  Sparkles,
-  User,
-  Mail,
-  Lock,
-} from "lucide-react";
+import { X, CheckCircle2, AlertCircle, Sparkles, User, Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface RegistrationModalProps {
@@ -18,29 +10,19 @@ interface RegistrationModalProps {
   onClose: () => void;
 }
 
-const RegistrationModal = ({
-  event,
-  open,
-  onClose,
-}: RegistrationModalProps) => {
+const RegistrationModal = ({ event, open, onClose }: RegistrationModalProps) => {
   const { registerForEvent, currentStudent } = useApp();
   const [name, setName] = useState(currentStudent?.name || "");
   const [email, setEmail] = useState(currentStudent?.email || "");
-  const [result, setResult] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
   if (!open) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    setIsLoading(true);
-    const res = await registerForEvent(event.id, name.trim(), email.trim());
+    const res = registerForEvent(event.id, name.trim(), email.trim());
     setResult(res);
-    setIsLoading(false);
   };
 
   const handleClose = () => {
@@ -79,17 +61,10 @@ const RegistrationModal = ({
                   <div className="rounded-full bg-success/10 p-5 border-2 border-success/20">
                     <CheckCircle2 size={40} className="text-success" />
                   </div>
-                  <Sparkles
-                    size={16}
-                    className="absolute -top-1 -right-1 text-success animate-pulse-soft"
-                  />
+                  <Sparkles size={16} className="absolute -top-1 -right-1 text-success animate-pulse-soft" />
                 </div>
-                <h3 className="mt-4 text-xl font-extrabold text-foreground">
-                  You're In! 🎉
-                </h3>
-                <p className="mt-2 text-sm font-serif text-muted-foreground max-w-[240px]">
-                  {result.message}
-                </p>
+                <h3 className="mt-4 text-xl font-extrabold text-foreground">You're In! 🎉</h3>
+                <p className="mt-2 text-sm font-serif text-muted-foreground max-w-[240px]">{result.message}</p>
                 <div className="mt-3 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5 text-xs font-medium text-success">
                   Check your dashboard for event details
                 </div>
@@ -99,12 +74,8 @@ const RegistrationModal = ({
                 <div className="rounded-full bg-destructive/10 p-5 border-2 border-destructive/20">
                   <AlertCircle size={40} className="text-destructive" />
                 </div>
-                <h3 className="mt-4 text-xl font-extrabold text-foreground">
-                  Couldn't Register
-                </h3>
-                <p className="mt-2 text-sm font-serif text-muted-foreground">
-                  {result.message}
-                </p>
+                <h3 className="mt-4 text-xl font-extrabold text-foreground">Couldn't Register</h3>
+                <p className="mt-2 text-sm font-serif text-muted-foreground">{result.message}</p>
               </>
             )}
             <button
@@ -120,12 +91,9 @@ const RegistrationModal = ({
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 mb-4">
               <Lock size={28} className="text-primary" />
             </div>
-            <h3 className="text-lg font-extrabold text-foreground">
-              Login Required
-            </h3>
+            <h3 className="text-lg font-extrabold text-foreground">Login Required</h3>
             <p className="mt-2 text-sm font-serif text-muted-foreground max-w-[260px]">
-              Please sign in to your student portal to register for{" "}
-              <strong>{event.name}</strong>
+              Please sign in to your student portal to register for <strong>{event.name}</strong>
             </p>
             <div className="mt-6 flex flex-col w-full gap-2.5">
               <Link
@@ -151,12 +119,8 @@ const RegistrationModal = ({
                 <Sparkles size={20} className="text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-extrabold text-foreground">
-                  Register for Event
-                </h3>
-                <p className="text-xs font-serif text-muted-foreground mt-0.5 line-clamp-1">
-                  {event.name}
-                </p>
+                <h3 className="text-lg font-extrabold text-foreground">Register for Event</h3>
+                <p className="text-xs font-serif text-muted-foreground mt-0.5 line-clamp-1">{event.name}</p>
               </div>
             </div>
 
@@ -164,22 +128,15 @@ const RegistrationModal = ({
             {currentStudent && (
               <div className="mb-4 flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-3.5 py-2.5">
                 <CheckCircle2 size={14} className="text-success shrink-0" />
-                <p className="text-xs font-medium text-success">
-                  Logged in as {currentStudent.name}
-                </p>
+                <p className="text-xs font-medium text-success">Logged in as {currentStudent.name}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-foreground">
-                  Student Name
-                </label>
+                <label className="mb-1.5 block text-sm font-semibold text-foreground">Student Name</label>
                 <div className="relative">
-                  <User
-                    size={14}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
+                  <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
                     value={name}
@@ -192,14 +149,9 @@ const RegistrationModal = ({
                 </div>
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-foreground">
-                  Student Email
-                </label>
+                <label className="mb-1.5 block text-sm font-semibold text-foreground">Student Email</label>
                 <div className="relative">
-                  <Mail
-                    size={14}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
+                  <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="email"
                     value={email}
@@ -212,9 +164,7 @@ const RegistrationModal = ({
                 </div>
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-foreground">
-                  Event
-                </label>
+                <label className="mb-1.5 block text-sm font-semibold text-foreground">Event</label>
                 <input
                   type="text"
                   value={event.name}
@@ -224,10 +174,9 @@ const RegistrationModal = ({
               </div>
               <button
                 type="submit"
-                disabled={isLoading}
-                className="mt-2 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground btn-primary-brighten disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-2 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground btn-primary-brighten"
               >
-                {isLoading ? "Registering..." : "Confirm Registration"}
+                Confirm Registration
               </button>
             </form>
           </>
