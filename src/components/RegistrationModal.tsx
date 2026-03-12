@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useApp } from "@/context/AppContext";
+import { useApp, TeamMember } from "@/context/AppContext";
 import { Event } from "@/data/events";
 import {
   X,
@@ -9,8 +9,11 @@ import {
   User,
   Mail,
   Lock,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import TeamRegistrationForm, { TeamFormData } from "./TeamRegistrationForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface RegistrationModalProps {
   event: Event;
@@ -23,7 +26,10 @@ const RegistrationModal = ({
   open,
   onClose,
 }: RegistrationModalProps) => {
-  const { registerForEvent, currentStudent } = useApp();
+  const { registerForEvent, registerTeam, currentStudent } = useApp();
+  const [registrationType, setRegistrationType] = useState<
+    "individual" | "team"
+  >("individual");
   const [name, setName] = useState(currentStudent?.name || "");
   const [email, setEmail] = useState(currentStudent?.email || "");
   const [result, setResult] = useState<{
@@ -34,19 +40,34 @@ const RegistrationModal = ({
 
   if (!open) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    setIsLoading(true);
-    const res = await registerForEvent(event.id, name.trim(), email.trim());
+    const res = registerForEvent(event.id, name.trim(), email.trim());
     setResult(res);
-    setIsLoading(false);
+  };
+
+  const handleTeamSubmit = async (formData: TeamFormData) => {
+    setIsLoading(true);
+    try {
+      const teamMembers: TeamMember[] = formData.members.map((m) => ({
+        name: m.name,
+        email: m.email,
+      }));
+
+      const res = registerTeam(event.id, formData.teamName, teamMembers);
+      setResult(res);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClose = () => {
     setResult(null);
+    setRegistrationType("individual");
     setName(currentStudent?.name || "");
     setEmail(currentStudent?.email || "");
+    setIsLoading(false);
     onClose();
   };
 
@@ -144,7 +165,7 @@ const RegistrationModal = ({
             </div>
           </div>
         ) : (
-          /* Registration form */
+          /* Registration form with tabs */
           <>
             <div className="flex items-center gap-3 mb-6">
               <div className="rounded-xl bg-primary/10 border border-primary/20 p-2.5">
@@ -170,66 +191,97 @@ const RegistrationModal = ({
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="mb-1.5 block text-sm font-semibold text-foreground">
-                  Student Name
-                </label>
-                <div className="relative">
-                  <User
-                    size={14}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    readOnly={!!currentStudent}
-                    className={`glass-input pl-9 ${currentStudent ? "bg-muted text-muted-foreground cursor-not-allowed" : ""}`}
-                    placeholder="Enter your name"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-semibold text-foreground">
-                  Student Email
-                </label>
-                <div className="relative">
-                  <Mail
-                    size={14}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    readOnly={!!currentStudent}
-                    className={`glass-input pl-9 ${currentStudent ? "bg-muted text-muted-foreground cursor-not-allowed" : ""}`}
-                    placeholder="you@college.edu"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-semibold text-foreground">
-                  Event
-                </label>
-                <input
-                  type="text"
-                  value={event.name}
-                  disabled
-                  className="glass-input bg-muted text-muted-foreground cursor-not-allowed"
+            <Tabs
+              value={registrationType}
+              onValueChange={(v) =>
+                setRegistrationType(v as "individual" | "team")
+              }
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="individual" className="gap-2">
+                  <User size={14} />
+                  <span className="hidden sm:inline">Solo</span>
+                </TabsTrigger>
+                <TabsTrigger value="team" className="gap-2">
+                  <Users size={14} />
+                  <span className="hidden sm:inline">Team</span>
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Individual Registration Tab */}
+              <TabsContent value="individual" className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="mb-1.5 block text-sm font-semibold text-foreground">
+                      Student Name
+                    </label>
+                    <div className="relative">
+                      <User
+                        size={14}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      />
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        readOnly={!!currentStudent}
+                        className={`glass-input pl-9 ${currentStudent ? "bg-muted text-muted-foreground cursor-not-allowed" : ""}`}
+                        placeholder="Enter your name"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-semibold text-foreground">
+                      Student Email
+                    </label>
+                    <div className="relative">
+                      <Mail
+                        size={14}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        readOnly={!!currentStudent}
+                        className={`glass-input pl-9 ${currentStudent ? "bg-muted text-muted-foreground cursor-not-allowed" : ""}`}
+                        placeholder="you@college.edu"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-semibold text-foreground">
+                      Event
+                    </label>
+                    <input
+                      type="text"
+                      value={event.name}
+                      disabled
+                      className="glass-input bg-muted text-muted-foreground cursor-not-allowed"
+                      title={event.name}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="mt-2 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground btn-primary-brighten"
+                  >
+                    Confirm Registration
+                  </button>
+                </form>
+              </TabsContent>
+
+              {/* Team Registration Tab */}
+              <TabsContent value="team">
+                <TeamRegistrationForm
+                  isLoading={isLoading}
+                  onSubmit={handleTeamSubmit}
+                  onCancel={() => setRegistrationType("individual")}
                 />
-              </div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="mt-2 w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground btn-primary-brighten disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? "Registering..." : "Confirm Registration"}
-              </button>
-            </form>
+              </TabsContent>
+            </Tabs>
           </>
         )}
       </div>

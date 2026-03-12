@@ -61,6 +61,45 @@ CREATE TABLE IF NOT EXISTS registrations (
 ) ENGINE=InnoDB;
 
 -- ============================================================
+-- TABLE: teams
+-- ============================================================
+CREATE TABLE IF NOT EXISTS teams (
+    team_id       INT AUTO_INCREMENT PRIMARY KEY,
+    event_id      INT      NOT NULL,
+    team_name     VARCHAR(255) NOT NULL,
+    team_lead_id  INT      NOT NULL,
+    created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- Prevent duplicate team registrations for the same event
+    UNIQUE KEY uq_team_event_lead (event_id, team_lead_id),
+
+    FOREIGN KEY (event_id)     REFERENCES events(event_id)     ON DELETE CASCADE,
+    FOREIGN KEY (team_lead_id) REFERENCES students(student_id) ON DELETE CASCADE,
+
+    INDEX idx_team_event (event_id),
+    INDEX idx_team_lead  (team_lead_id)
+) ENGINE=InnoDB;
+
+-- ============================================================
+-- TABLE: team_members
+-- ============================================================
+CREATE TABLE IF NOT EXISTS team_members (
+    team_member_id INT AUTO_INCREMENT PRIMARY KEY,
+    team_id        INT NOT NULL,
+    student_id     INT NOT NULL,
+    joined_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- Prevent duplicate members in the same team
+    UNIQUE KEY uq_team_student (team_id, student_id),
+
+    FOREIGN KEY (team_id)    REFERENCES teams(team_id)     ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
+
+    INDEX idx_member_team    (team_id),
+    INDEX idx_member_student (student_id)
+) ENGINE=InnoDB;
+
+-- ============================================================
 -- SEED DATA: Sample Events (matches frontend SAMPLE_EVENTS)
 -- ============================================================
 INSERT INTO events

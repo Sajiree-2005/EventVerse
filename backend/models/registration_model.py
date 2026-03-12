@@ -52,3 +52,29 @@ def get_all_registrations():
         ORDER BY r.registration_date DESC
     """
     return execute_query(query, fetch="all")
+
+
+def get_registration_by_id(registration_id: int):
+    """Fetch a single registration record by ID."""
+    query = """
+        SELECT 
+            r.registration_id,
+            r.event_id,
+            r.student_id,
+            r.registration_date,
+            s.student_name,
+            s.student_email
+        FROM registrations r
+        JOIN students s ON r.student_id = s.student_id
+        WHERE r.registration_id = %s
+    """
+    return execute_query(query, (registration_id,), fetch="one")
+
+
+def cancel_registration(registration_id: int) -> bool:
+    """Delete a registration record by ID. Returns True if successful."""
+    result = execute_query(
+        "DELETE FROM registrations WHERE registration_id = %s",
+        (registration_id,)
+    )
+    return result is not None
