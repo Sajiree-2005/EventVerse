@@ -12,16 +12,13 @@ def create_app():
     app.config["SECRET_KEY"] = Config.SECRET_KEY
     app.config["DEBUG"] = Config.DEBUG
 
-    # Allow requests from React dev server (Vite default: 5173)
+    # Enable CORS for all origins (can be restricted in production with environment variables)
     CORS(app, resources={
         r"/api/*": {
-            "origins": [
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "http://127.0.0.1:5173",
-            ],
+            "origins": "*",
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"]
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": False,
         }
     })
 
