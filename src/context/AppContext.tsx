@@ -37,7 +37,6 @@ interface AppContextType extends AppState {
   addEvent: (event: Omit<Event, "id" | "createdAt" | "registered">) => void;
   updateEvent: (id: string, updates: Partial<Event>) => void;
   deleteEvent: (id: string) => void;
-<<<<<<< HEAD
   registerForEvent: (
     eventId: string,
     studentName: string,
@@ -52,9 +51,6 @@ interface AppContextType extends AppState {
     registrationId: string,
     studentEmail: string,
   ) => { success: boolean; message: string };
-=======
-  registerForEvent: (eventId: string, studentName: string, studentEmail: string) => { success: boolean; message: string };
->>>>>>> adf9310034c29bfb2d1ba04c15938cebcbb05711
   loginAdmin: (email: string, password: string) => boolean;
   logoutAdmin: () => void;
   loginStudent: (name: string, email: string) => void;
@@ -72,17 +68,18 @@ export const useApp = () => {
   return ctx;
 };
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [events, setEvents] = useState<Event[]>(SAMPLE_EVENTS);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [notificationBanner, setNotificationBanner] = useState<string | null>(
-    "🔥 New Event Added: Hackathon 2026 — Register before 15 March"
+    "🔥 New Event Added: Hackathon 2026 — Register before 15 March",
   );
 
-<<<<<<< HEAD
   const addEvent = useCallback(
     (event: Omit<Event, "id" | "createdAt" | "registered">) => {
       const newEvent: Event = {
@@ -103,21 +100,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setEvents((prev) =>
       prev.map((e) => (e.id === id ? { ...e, ...updates } : e)),
     );
-=======
-  const addEvent = useCallback((event: Omit<Event, "id" | "createdAt" | "registered">) => {
-    const newEvent: Event = {
-      ...event,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      registered: 0,
-    };
-    setEvents((prev) => [newEvent, ...prev]);
-    setNotificationBanner(`🔥 New Event Added: ${event.name} — Register now!`);
-  }, []);
-
-  const updateEvent = useCallback((id: string, updates: Partial<Event>) => {
-    setEvents((prev) => prev.map((e) => (e.id === id ? { ...e, ...updates } : e)));
->>>>>>> adf9310034c29bfb2d1ba04c15938cebcbb05711
   }, []);
 
   const deleteEvent = useCallback((id: string) => {
@@ -128,7 +110,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const registerForEvent = useCallback(
     (eventId: string, studentName: string, studentEmail: string) => {
       const existing = registrations.find(
-<<<<<<< HEAD
         (r) => r.eventId === eventId && r.studentEmail === studentEmail,
       );
       if (existing) {
@@ -136,12 +117,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           success: false,
           message: "You already registered for this event",
         };
-=======
-        (r) => r.eventId === eventId && r.studentEmail === studentEmail
-      );
-      if (existing) {
-        return { success: false, message: "You already registered for this event" };
->>>>>>> adf9310034c29bfb2d1ba04c15938cebcbb05711
       }
       const event = events.find((e) => e.id === eventId);
       if (!event) return { success: false, message: "Event not found" };
@@ -158,7 +133,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       };
       setRegistrations((prev) => [...prev, reg]);
       setEvents((prev) =>
-<<<<<<< HEAD
         prev.map((e) =>
           e.id === eventId ? { ...e, registered: e.registered + 1 } : e,
         ),
@@ -290,15 +264,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     [teams, events],
   );
 
-=======
-        prev.map((e) => (e.id === eventId ? { ...e, registered: e.registered + 1 } : e))
-      );
-      return { success: true, message: `You are registered for ${event.name}` };
-    },
-    [registrations, events]
-  );
-
->>>>>>> adf9310034c29bfb2d1ba04c15938cebcbb05711
   const loginAdmin = useCallback((email: string, password: string) => {
     if (email === "admin@eventverse.com" && password === "admin123") {
       setIsAdminLoggedIn(true);
@@ -319,7 +284,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const getEventRegistrations = useCallback(
     (eventId: string) => registrations.filter((r) => r.eventId === eventId),
-    [registrations]
+    [registrations],
   );
 
   const getEventTeams = useCallback(
