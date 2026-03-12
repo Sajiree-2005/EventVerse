@@ -68,16 +68,14 @@ export const useApp = () => {
   return ctx;
 };
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<Event[]>(SAMPLE_EVENTS);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [notificationBanner, setNotificationBanner] = useState<string | null>(
-    "🔥 New Event Added: Hackathon 2026 — Register before 15 March",
+    "🔥 New Event Added: Hackathon 2026 — Register before 15 March"
   );
 
   const addEvent = useCallback(
@@ -284,7 +282,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const getEventRegistrations = useCallback(
     (eventId: string) => registrations.filter((r) => r.eventId === eventId),
-    [registrations],
+    [registrations]
   );
 
   const getEventTeams = useCallback(

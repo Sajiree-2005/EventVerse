@@ -96,3 +96,55 @@ def admin_login():
             "admin": {"email": email}
         }), 200
     return jsonify({"success": False, "message": "Invalid credentials"}), 401
+
+
+def get_student_analytics():
+    """GET /api/student/analytics?email=<email>"""
+    email = request.args.get("email", "").strip().lower()
+    if not email:
+        return jsonify({"error": "Email required"}), 400
+    try:
+        from models.student_model import get_student_analytics, get_student_registrations
+        from models.volunteer_model import get_student_volunteering
+        from datetime import datetime
+
+        analytics = get_student_analytics(email)
+        registrations = get_student_registrations(email)
+
+        # Build category distribution
+        cat_counts = {}
+        for r in registrations:
+            cat = r.get("category", "Unknown")
+            cat_counts[cat] = cat_counts.get(cat, 0) + 1
+
+        # Upcoming events list (next 3)
+        now = datetime.now()
+        upcoming = []
+        for r in registrations:
+            event_date = r.get("date")
+            if event_date and hasattr(event_date, "timestamp"):
+                if event_date > now:
+                    upcoming.append({
+                        "name": r.get("name"),
+                        "date": event_date.isoformat(),
+                        "venue": r.get("venue"),
+                        "category": r.get("category"),
+                        "eventId": r.get("id")
+                    })
+
+        upcoming = upcoming[:3]
+
+        if not analytics:
+            analytics = {}
+
+        return jsonify({
+            "totalRegistered": int(analytics.get("totalRegistered") or 0),
+            "upcoming": int(analytics.get("upcoming") or 0),
+            "attended": int(analytics.get("attended") or 0),
+            "feedbackSubmitted": int(analytics.get("feedbackSubmitted") or 0),
+            "volunteeringCount": int(analytics.get("volunteeringCount") or 0),
+            "categoryDistribution": [{"category": k, "count": v} for k, v in cat_counts.items()],
+            "upcomingEvents": upcoming
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

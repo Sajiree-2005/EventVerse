@@ -5,6 +5,9 @@ from config import Config
 from routes.event_routes import event_bp
 from routes.registration_routes import registration_bp
 from routes.admin_routes import admin_bp
+from routes.volunteer_routes import volunteer_bp
+from routes.notification_routes import notification_bp
+from routes.feedback_routes import feedback_bp
 
 
 def create_app():
@@ -12,35 +15,29 @@ def create_app():
     app.config["SECRET_KEY"] = Config.SECRET_KEY
     app.config["DEBUG"] = Config.DEBUG
 
-    # Allow requests from React dev server (Vite default: 5173)
     CORS(app, resources={
         r"/api/*": {
-            "origins": [
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "http://127.0.0.1:5173",
-            ],
+            "origins": ["*"],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"]
         }
     })
 
-    # Register blueprints under /api prefix
-    app.register_blueprint(event_bp, url_prefix="/api")
+    app.register_blueprint(event_bp,        url_prefix="/api")
     app.register_blueprint(registration_bp, url_prefix="/api")
-    app.register_blueprint(admin_bp, url_prefix="/api")
+    app.register_blueprint(admin_bp,        url_prefix="/api")
+    app.register_blueprint(volunteer_bp,    url_prefix="/api")
+    app.register_blueprint(notification_bp, url_prefix="/api")
+    app.register_blueprint(feedback_bp,     url_prefix="/api")
 
-    # Health check
     @app.route("/api/health", methods=["GET"])
     def health():
-        return jsonify({"status": "ok", "message": "EventVerse API is running"}), 200
+        return jsonify({"status": "ok"}), 200
 
-    # 404 handler
     @app.errorhandler(404)
     def not_found(e):
         return jsonify({"error": "Route not found"}), 404
 
-    # 500 handler
     @app.errorhandler(500)
     def server_error(e):
         return jsonify({"error": "Internal server error"}), 500
@@ -51,19 +48,4 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     print("🚀 EventVerse API running at http://localhost:5000")
-    print("📋 Available endpoints:")
-    print("   GET    /api/health")
-    print("   GET    /api/events")
-    print("   GET    /api/events/<id>")
-    print("   POST   /api/events")
-    print("   PUT    /api/events/<id>")
-    print("   DELETE /api/events/<id>")
-    print("   POST   /api/register")
-    print("   POST   /api/register_team")
-    print("   POST   /api/cancel_registration")
-    print("   GET    /api/events/<id>/participants")
-    print("   GET    /api/events/<id>/export")
-    print("   GET    /api/student/registrations?email=<email>")
-    print("   GET    /api/admin/analytics")
-    print("   POST   /api/admin/login")
     app.run(host="0.0.0.0", port=5000, debug=Config.DEBUG)

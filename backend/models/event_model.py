@@ -14,6 +14,8 @@ def get_all_events():
             e.max_participants AS capacity,
             e.poster_url AS poster,
             e.registration_deadline AS registrationDeadline,
+            e.volunteering_enabled AS volunteeringEnabled,
+            e.volunteer_slots AS volunteerSlots,
             e.created_at AS createdAt,
             COUNT(r.registration_id) AS registered
         FROM events e
@@ -37,6 +39,8 @@ def get_event_by_id(event_id: int):
             e.max_participants AS capacity,
             e.poster_url AS poster,
             e.registration_deadline AS registrationDeadline,
+            e.volunteering_enabled AS volunteeringEnabled,
+            e.volunteer_slots AS volunteerSlots,
             e.created_at AS createdAt,
             COUNT(r.registration_id) AS registered,
             (e.max_participants - COUNT(r.registration_id)) AS seats_remaining
@@ -53,13 +57,16 @@ def create_event(data: dict):
     query = """
         INSERT INTO events 
             (event_name, event_description, event_date, event_venue, 
-             event_category, max_participants, poster_url, registration_deadline)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+             event_category, max_participants, poster_url, registration_deadline,
+             volunteering_enabled, volunteer_slots)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     params = (
         data["name"], data["description"], data["date"],
         data["venue"], data["category"], data["capacity"],
-        data.get("poster", ""), data["registrationDeadline"]
+        data.get("poster", ""), data["registrationDeadline"],
+        1 if data.get("volunteeringEnabled") else 0,
+        int(data.get("volunteerSlots", 0))
     )
     return execute_query(query, params)
 

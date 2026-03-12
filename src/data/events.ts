@@ -10,6 +10,8 @@ export interface Event {
   registrationDeadline: string;
   poster: string;
   createdAt: string;
+  volunteeringEnabled?: boolean;
+  volunteerSlots?: number;
 }
 
 export interface Registration {
@@ -46,6 +48,8 @@ export const SAMPLE_EVENTS: Event[] = [
     poster:
       "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop",
     createdAt: "2026-03-01T00:00:00",
+    volunteeringEnabled: true,
+    volunteerSlots: 10,
   },
   {
     id: "2",
@@ -61,6 +65,8 @@ export const SAMPLE_EVENTS: Event[] = [
     poster:
       "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop",
     createdAt: "2026-03-05T00:00:00",
+    volunteeringEnabled: true,
+    volunteerSlots: 20,
   },
   {
     id: "3",
@@ -76,6 +82,8 @@ export const SAMPLE_EVENTS: Event[] = [
     poster:
       "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&h=400&fit=crop",
     createdAt: "2026-03-08T00:00:00",
+    volunteeringEnabled: true,
+    volunteerSlots: 30,
   },
   {
     id: "4",
@@ -121,5 +129,7 @@ export const SAMPLE_EVENTS: Event[] = [
     poster:
       "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop",
     createdAt: "2026-03-06T00:00:00",
+    volunteeringEnabled: true,
+    volunteerSlots: 8,
   },
 ];

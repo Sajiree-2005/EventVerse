@@ -130,3 +130,33 @@ def delete_team(team_id: int):
     execute_query("DELETE FROM team_members WHERE team_id = %s", (team_id,))
     execute_query("DELETE FROM teams WHERE team_id = %s", (team_id,))
     return team_id
+
+
+def get_student_teams(email: str):
+    """Return all teams where the student is lead or member."""
+    return execute_query(
+        """
+        SELECT DISTINCT
+            t.team_id AS id,
+            t.team_name AS name,
+            e.event_name AS eventName,
+            e.event_id AS eventId,
+            e.event_date AS eventDate,
+            e.event_venue AS eventVenue,
+            sl.student_name AS leadName,
+            sl.student_email AS leadEmail,
+            t.created_at AS createdAt
+        FROM teams t
+        JOIN events e ON t.event_id = e.event_id
+        JOIN students sl ON t.team_lead_id = sl.student_id
+        WHERE sl.student_email = %s
+           OR t.team_id IN (
+               SELECT tm.team_id FROM team_members tm
+               JOIN students s ON tm.student_id = s.student_id
+               WHERE s.student_email = %s
+           )
+        ORDER BY t.created_at DESC
+        """,
+        (email, email),
+        fetch="all"
+    )

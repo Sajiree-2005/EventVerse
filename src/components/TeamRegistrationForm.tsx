@@ -13,19 +13,25 @@ export interface TeamFormData {
 
 interface TeamRegistrationFormProps {
   isLoading?: boolean;
+  loading?: boolean;
   onSubmit: (formData: TeamFormData) => void;
   onCancel?: () => void;
+  defaultLeadName?: string;
+  defaultLeadEmail?: string;
 }
 
 const TeamRegistrationForm = ({
   isLoading = false,
+  loading = false,
   onSubmit,
   onCancel,
+  defaultLeadName = "",
+  defaultLeadEmail = "",
 }: TeamRegistrationFormProps) => {
   const [formData, setFormData] = useState<TeamFormData>({
     teamName: "",
-    leadName: "",
-    leadEmail: "",
+    leadName: defaultLeadName,
+    leadEmail: defaultLeadEmail,
     members: [{ name: "", email: "" }],
   });
 
@@ -297,8 +303,8 @@ const TeamRegistrationForm = ({
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={isLoading} className="gap-2">
-          {isLoading ? "Registering..." : "Register Team"}
+        <Button type="submit" disabled={isLoading || loading} className="gap-2">
+          {isLoading || loading ? "Registering..." : "Register Team"}
         </Button>
       </div>
     </form>

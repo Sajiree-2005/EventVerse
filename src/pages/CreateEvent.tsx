@@ -18,11 +18,14 @@ const CreateEvent = () => {
     registrationDeadline: "",
     category: EVENT_CATEGORIES[0],
     poster: "",
+    volunteeringEnabled: false,
+    volunteerSlots: "0",
   });
 
   if (!isAdminLoggedIn) return <Navigate to="/admin/login" />;
 
-  const update = (key: string, value: string) => setForm((p) => ({ ...p, [key]: value }));
+  const update = (key: string, value: string | boolean) =>
+    setForm((p) => ({ ...p, [key]: value }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +37,8 @@ const CreateEvent = () => {
       capacity: parseInt(form.capacity) || 50,
       registrationDeadline: new Date(form.registrationDeadline).toISOString(),
       category: form.category,
+      volunteeringEnabled: form.volunteeringEnabled,
+      volunteerSlots: parseInt(form.volunteerSlots) || 0,
       poster:
         form.poster ||
         "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop",
@@ -56,13 +61,15 @@ const CreateEvent = () => {
     );
   }
 
-  const textFields = [
-    { key: "name", label: "Event Name", type: "text", placeholder: "AI Workshop 2026", required: true },
-    { key: "date", label: "Event Date & Time", type: "datetime-local", required: true },
+  const topFields = [
+    { key: "name", label: "Event Name", type: "text", placeholder: "AI Workshop 2026", required: true, span2: true },
+    { key: "date", label: "Event Date & Time", type: "datetime-local", required: true, span2: false },
+  ];
+
+  const midFields = [
     { key: "venue", label: "Venue", type: "text", placeholder: "Seminar Hall A", required: true },
     { key: "capacity", label: "Max Participants", type: "number", placeholder: "50", required: true },
     { key: "registrationDeadline", label: "Registration Deadline", type: "datetime-local", required: true },
-    { key: "poster", label: "Poster Image URL", type: "url", placeholder: "https://images.unsplash.com/…", required: false },
   ];
 
   return (
@@ -89,10 +96,10 @@ const CreateEvent = () => {
 
       <div className="card-elevated p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Description (full width at top) */}
+          {/* Name + Date */}
           <div className="grid sm:grid-cols-2 gap-5">
-            {textFields.slice(0, 2).map((f) => (
-              <div key={f.key} className={f.key === "name" ? "sm:col-span-2" : ""}>
+            {topFields.map((f) => (
+              <div key={f.key} className={f.span2 ? "sm:col-span-2" : ""}>
                 <label className="mb-2 block text-sm font-semibold text-foreground">
                   {f.label}
                   {f.required && <span className="text-primary ml-0.5">*</span>}
@@ -103,12 +110,13 @@ const CreateEvent = () => {
                   onChange={(e) => update(f.key, e.target.value)}
                   required={f.required}
                   className="glass-input"
-                  placeholder={f.placeholder}
+                  placeholder={(f as any).placeholder}
                 />
               </div>
             ))}
           </div>
 
+          {/* Description */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-foreground">
               Description<span className="text-primary ml-0.5">*</span>
@@ -123,8 +131,9 @@ const CreateEvent = () => {
             />
           </div>
 
+          {/* Venue, Capacity, Deadline, Category */}
           <div className="grid sm:grid-cols-2 gap-5">
-            {textFields.slice(2, 5).map((f) => (
+            {midFields.map((f) => (
               <div key={f.key}>
                 <label className="mb-2 block text-sm font-semibold text-foreground">
                   {f.label}
@@ -136,12 +145,14 @@ const CreateEvent = () => {
                   onChange={(e) => update(f.key, e.target.value)}
                   required={f.required}
                   className="glass-input"
-                  placeholder={f.placeholder}
+                  placeholder={(f as any).placeholder}
                 />
               </div>
             ))}
             <div>
-              <label className="mb-2 block text-sm font-semibold text-foreground">Category<span className="text-primary ml-0.5">*</span></label>
+              <label className="mb-2 block text-sm font-semibold text-foreground">
+                Category<span className="text-primary ml-0.5">*</span>
+              </label>
               <select
                 value={form.category}
                 onChange={(e) => update("category", e.target.value)}
@@ -156,7 +167,7 @@ const CreateEvent = () => {
 
           {/* Poster URL */}
           <div>
-            <label className="mb-2 block text-sm font-semibold text-foreground flex items-center gap-1.5">
+            <label className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-foreground">
               <ImageIcon size={13} />
               Poster Image URL
               <span className="text-xs font-normal text-muted-foreground">(optional)</span>
@@ -178,6 +189,40 @@ const CreateEvent = () => {
             )}
           </div>
 
+          {/* Volunteering Toggle */}
+          <div className="rounded-xl border border-border bg-muted/20 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-bold text-foreground">Enable Volunteering</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Allow students to volunteer for this event
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={form.volunteeringEnabled}
+                onChange={(e) => update("volunteeringEnabled", e.target.checked)}
+                className="h-5 w-5 accent-primary cursor-pointer"
+              />
+            </div>
+            {form.volunteeringEnabled && (
+              <div className="mt-4">
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
+                  Volunteer Slots
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={form.volunteerSlots}
+                  onChange={(e) => update("volunteerSlots", e.target.value)}
+                  className="glass-input"
+                  placeholder="10"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
           <div className="pt-2 flex gap-3">
             <button
               type="submit"

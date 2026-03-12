@@ -66,6 +66,12 @@ const EventDetail = () => {
               <span className="inline-block rounded-full bg-primary px-4 py-1 text-xs font-bold text-primary-foreground shadow-lg">
                 {event.category}
               </span>
+              {event.volunteeringEnabled && (
+                <span className="flex items-center gap-1.5 bg-rose-500/80 text-white rounded-full px-3 py-1 text-xs font-bold">
+                  <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/></svg>
+                  Volunteering Open
+                </span>
+              )}
             </div>
             <h1 className="text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl drop-shadow-md">
               {event.name}
