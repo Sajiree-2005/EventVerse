@@ -124,7 +124,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         const response = await fetch(`${API_BASE_URL}/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ eventId, studentName, studentEmail }),
+          body: JSON.stringify({
+            eventId: parseInt(eventId, 10),
+            studentName,
+            studentEmail,
+          }),
         });
 
         const data = await response.json();
