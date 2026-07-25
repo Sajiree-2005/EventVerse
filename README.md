@@ -153,7 +153,7 @@ CREATE TABLE Registrations (
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/eventverse.git
+git clone https://github.com/Sajiree-2005/eventverse.git
 cd eventverse
 ```
 
